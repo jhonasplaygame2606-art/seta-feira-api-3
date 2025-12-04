@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IA Sexta-Feira</title>
+  <style>
+    body {
+      background: #0b0f17;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    #chat {
+      max-width: 600px;
+      margin: auto;
+      background: #141a24;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .msg {
+      margin-bottom: 15px;
+    }
+    .user { color: #00b7ff; }
+    .ia { color: #00ff9d; }
+  </style>
+</head>
+
+<body>
+  <div id="chat">
+    <h2>🤖 IA Sexta-Feira</h2>
+    <div id="messages"></div>
+
+    <input id="input" type="text" placeholder="Digite sua mensagem..." style="width:80%; padding:8px;">
+    <button onclick="sendMessage()" style="padding:8px;">Enviar</button>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById("input");
+      const text = input.value.trim();
+      if (!text) return;
+
+      addMessage("Você", text, "user");
+      input.value = "";
+
+      const response = await fetch("/.netlify/functions/chat", {
+        method: "POST",
+        body: JSON.stringify({ message: text })
+      });
+
+      const data = await response.json();
+      addMessage("Sexta-Feira", data.reply, "ia");
+    }
+
+    function addMessage(sender, message, cls) {
+      const div = document.getElementById("messages");
+      div.innerHTML += `<div class="msg ${cls}"><b>${sender}:</b> ${message}</div>`;
+      div.scrollTop = div.scrollHeight;
+    }
+  </script>
+</body>
+</html>
